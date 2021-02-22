@@ -1,3 +1,8 @@
+# ToDo
+* [x] Caesar chipher for C#
+* [ ] Caesar chipher for C++
+* [ ] Caeser chipher for Python
+
 Mutlibyte XOR or AES encrypted shellcode
 ============
 
