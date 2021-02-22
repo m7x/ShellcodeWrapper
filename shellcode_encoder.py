@@ -40,6 +40,18 @@ def xor(data, key):
 	)))
 
 #------------------------------------------------------------------------
+# data as a bytearray
+# key as a string
+def caesar(data, key):
+    if not key.isdigit():
+        print color("[!] Key must be an integer [{}]".format(key))
+        exit()
+    else:
+        return bytes(bytearray((
+            ((data[i]  + int(key)) & 0xFF) for i in range(0,len(data))
+        )))
+
+#------------------------------------------------------------------------
 def pad(s):
 	"""PKCS7 padding"""
 	return s + (AES.block_size - len(s) % AES.block_size) * chr(AES.block_size - len(s) % AES.block_size)
@@ -181,7 +193,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("shellcodeFile", help="File name containing the raw shellcode to be encoded/encrypted")
 	parser.add_argument("key", help="Key used to transform (XOR or AES encryption) the shellcode")
-	parser.add_argument("encryptionType", help="Encryption algorithm to apply to the shellcode", choices=['xor','aes'])
+	parser.add_argument("encryptionType", help="Encryption algorithm to apply to the shellcode",choices=['xor','aes','caesar'])
 	parser.add_argument("-b64", "--base64", help="Display transformed shellcode as base64 encoded string", action="store_true")
 	parser.add_argument("-cpp", "--cplusplus", help="Generates C++ file code", action="store_true")
 	parser.add_argument("-cs", "--csharp", help="Generates C# file code", action="store_true")
@@ -225,6 +237,14 @@ if __name__ == '__main__':
 		print color("[*] XOR encoding the shellcode with key [{}]".format(masterKey))
 		transformedShellcode = xor(shellcodeBytes, masterKey)
 		cipherType = 'xor'
+
+	#------------------------------------------------------------------------
+	# Perform Caeser transformation
+	elif args.encryptionType == 'caesar':
+		masterKey = args.key
+		print color("[*] Caeser encoding the shellcode with key [{}]".format(masterKey))
+		transformedShellcode = caesar(shellcodeBytes, masterKey)
+		cipherType = 'caesar'
 
 	#------------------------------------------------------------------------
 	# Display interim results

