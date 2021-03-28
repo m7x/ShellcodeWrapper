@@ -16,12 +16,14 @@ import os
 templates = {
 	'cpp': './templates/encryptedShellcodeWrapper.cpp',
 	'csharp': './templates/encryptedShellcodeWrapper.cs',
+	'csharp-xor': './templates/encryptedShellcode_xor.cs',
 	'python': './templates/encryptedShellcodeWrapper.py'
 }
 
 resultFiles = {
 	'cpp': './result/encryptedShellcodeWrapper.cpp',
 	'csharp': './result/encryptedShellcodeWrapper.cs',
+    'csharp-xor': './result/encryptedShellcode_xor.cs',	
 	'python': './result/encryptedShellcodeWrapper.py'
 }
 
@@ -110,7 +112,11 @@ def formatCPP(data, key, cipherType):
 def formatCSharp(data, key, cipherType):
 	shellcode = '0x'
 	shellcode += ',0x'.join(format(ord(b),'02x') for b in data)
-	result = convertFromTemplate({'shellcode': shellcode, 'key': key, 'cipherType': cipherType}, templates['csharp'])
+	
+	if cipherType == "xor":
+		result = convertFromTemplate({'shellcode': shellcode, 'key': key, 'cipherType': cipherType}, templates['csharp-xor'])
+	else:
+		result = convertFromTemplate({'shellcode': shellcode, 'key': key, 'cipherType': cipherType}, templates['csharp'])	
 
 	if result != None:
 		try:
